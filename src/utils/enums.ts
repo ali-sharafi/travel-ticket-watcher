@@ -1,0 +1,1 @@
+export enum TravelTypes { AIRPLAN = 'airplan', TRAIN = 'train', BUS = 'bus' }
