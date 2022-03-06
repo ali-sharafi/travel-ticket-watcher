@@ -1,12 +1,29 @@
 import { Request, Response } from "express";
+import { TravelInterface } from "../contract/travelInterface";
 import Travel from "../models/travel";
+import { Alibaba } from "../services/alibaba";
 
 export class TravelController {
-    constructor() {
+    declare services: TravelInterface[];
 
+    constructor() {
+        this.services = [new Alibaba()];
     }
 
-    static handleAdd(req: Request, res: Response) {
+    async read() {
+        const travels = await Travel.findAll({
+            where: {
+                is_completed: false
+            }
+        })
+
+        for (let i = 0; i < this.services.length; i++) {
+            const service = this.services[i];
+            service.handle(travels);
+        }
+    }
+
+    static add(req: Request, res: Response) {
         Travel.create({
             type: req.body.type,
             origin: req.body.origin,
@@ -16,9 +33,5 @@ export class TravelController {
         });
 
         res.send('success');
-    }
-
-    add(from: Number, to: Number, date: Date) {
-
     }
 }

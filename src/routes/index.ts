@@ -16,7 +16,7 @@ router.post('/travel',
             return res.status(400).json({ errors: errors.array() });
         }
 
-        TravelController.handleAdd(req, res);
+        TravelController.add(req, res);
     });
 
 export default router;
