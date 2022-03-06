@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../utils/database';
 import { TravelTypes } from '../utils/enums';
 
-const User = sequelize.define('Travel', {
+const Travel = sequelize.define('Travel', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -39,4 +39,4 @@ const User = sequelize.define('Travel', {
     updatedAt: 'updated_at'
 });
 
-export default User;
+export default Travel;
