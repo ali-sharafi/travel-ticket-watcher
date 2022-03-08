@@ -1,4 +1,4 @@
-export type Notification = {
+export interface TicketNotification {
     message: string,
     link: string
 }
