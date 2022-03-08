@@ -1,7 +1,7 @@
-import { Model } from "sequelize/types";
-import { Notification } from '../types/notificationType';
+import Travel from "../models/travel";
+import { TicketNotification } from '../types/ticketNotificationType';
 
 export interface TravelInterface {
-    handle(travels: Model[]): void;
-    notify(payload: Notification): void;
+    handle(travels: Travel[]): void;
+    notify(payload: TicketNotification): void;
 }
