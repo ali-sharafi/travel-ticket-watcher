@@ -1,7 +1,13 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../utils/database';
 
-const City = sequelize.define('City', {
+export default class City extends Model {
+    declare id: number;
+    declare name: string;
+    declare code: string;
+}
+
+City.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -10,8 +16,10 @@ const City = sequelize.define('City', {
     name: {
         type: DataTypes.STRING,
     },
+    code: {
+        type: DataTypes.STRING,
+    },
 }, {
+    sequelize,
     timestamps: false
 });
-
-export default City;

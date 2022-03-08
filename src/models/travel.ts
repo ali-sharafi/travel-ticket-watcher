@@ -1,8 +1,19 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../utils/database';
 import { TravelTypes } from '../utils/enums';
 
-const Travel = sequelize.define('Travel', {
+export default class Travel extends Model {
+    declare id: number;
+    declare user_id: number;
+    declare type: TravelTypes;
+    declare origin: number;
+    declare destination: number;
+    declare date_at: Date;
+    declare is_completed: boolean;
+    declare max_price: string;
+}
+
+Travel.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -35,8 +46,7 @@ const Travel = sequelize.define('Travel', {
         type: DataTypes.STRING,
     }
 }, {
+    sequelize,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
-
-export default Travel;
