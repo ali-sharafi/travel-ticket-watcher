@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-jalaali';
 
 const sleep: Function = async (millis: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, millis));

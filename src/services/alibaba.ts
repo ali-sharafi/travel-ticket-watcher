@@ -1,12 +1,14 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { TravelInterface } from "../contract/travelInterface";
 import BaseEntity from "../infrustructure/baseEntity";
-import City from "../models/city";
 import Travel from "../models/travel";
+import telegramNotif from "../notifications/telegramNotif";
 import { AlibabaAvailableTokenRes, FinalResult, ResultType } from "../types/alibabaAvailableTokenRes";
 import { TicketNotification } from "../types/ticketNotificationType";
 import { TravelTypes } from "../utils/enums";
+import logger from "../utils/logger";
 import { sleep } from "../utils/tools";
+import moment from 'moment-jalaali';
 
 export class Alibaba extends BaseEntity implements TravelInterface {
     declare BASE_URI: string;
@@ -17,9 +19,13 @@ export class Alibaba extends BaseEntity implements TravelInterface {
     }
 
     async handle(travels: Travel[]): Promise<void> {
-
+        await this.readCities();
         for (let i = 0; i < travels.length; i++) {
             const travel = travels[i];
+            travel.origin_name = this.getCityByID(travel.origin)!.code;
+            travel.destination_name = this.getCityByID(travel.destination)!.code;
+
+            logger(`Going to check travel ${travel.origin_name} To ${travel.destination_name} for ${travel.date_at}`, 'alibaba')
             this.checkTravel(travel);
 
             await sleep(1000 * 60 * 1);
@@ -50,13 +56,13 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             let tickets = await this.getAirPlanTrips(token);
             if (tickets.length > 0) {
                 let payload: TicketNotification = {
-                    message: `Ticket found: ${this.getCityByID(travel.origin)?.name} To ${this.getCityByID(travel.destination)?.name} for ${travel.date_at}`,
-                    link: `https://www.alibaba.ir/flights/${this.getCityByID(travel.origin)?.code}-${this.getCityByID(travel.destination)?.name}?adult=1&child=0&infant=0&departing=${travel.date_at}`
+                    message: `Ticket found: ${travel.origin_name} To ${travel.destination_name} for ${travel.date_at}`,
+                    link: `https://www.alibaba.ir/flights/${travel.origin_name}-${travel.destination_name}?adult=1&child=0&infant=0&departing=${moment(travel.date_at).format('jYYYY-MM-DD')}`
                 }
 
                 this.notify(payload);
-            }
-        }
+            } else logger(`There is not any trips for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at}`, 'alibaba')
+        } else logger(`Token not available for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at}`, 'alibaba')
     }
 
     private async getAirPlanTrips(token: string): Promise<Array<object>> {
@@ -94,7 +100,10 @@ export class Alibaba extends BaseEntity implements TravelInterface {
         return null;
     }
 
-    notify(payload: TicketNotification): void {
-
+    async notify(payload: TicketNotification): Promise<void> {
+        let message = payload.message + '\n';
+        message += `<a href="${payload.link}">Link</a>`
+        await telegramNotif(message);
+        logger(`Notification sent for ${payload.message}`, 'alibaba');
     }
 }
