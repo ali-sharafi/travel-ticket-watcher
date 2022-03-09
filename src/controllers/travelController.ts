@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { TravelInterface } from "../contract/travelInterface";
 import Travel from "../models/travel";
 import { Alibaba } from "../services/alibaba";
+import logger from "../utils/logger";
 
 export class TravelController {
     declare services: TravelInterface[];
@@ -15,7 +16,12 @@ export class TravelController {
             where: {
                 is_completed: false
             }
-        })
+        });
+
+        if (travels.length == 0) {
+            logger('There is not any active travel...');
+            return;
+        }
 
         for (let i = 0; i < this.services.length; i++) {
             const service = this.services[i];
