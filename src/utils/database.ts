@@ -7,5 +7,6 @@ const DB_HOST: string = process.env.DB_HOST as string;
 
 export default new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
     host: DB_HOST,
-    dialect: 'mariadb'
+    dialect: 'mariadb',
+    logging: false
 });
