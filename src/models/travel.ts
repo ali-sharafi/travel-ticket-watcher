@@ -37,7 +37,7 @@ Travel.init({
         allowNull: false
     },
     date_at: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false,
     },
     is_completed: {
