@@ -1,17 +1,20 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import index from './routes';
-import sequelize from './utils/database';
 import bodyParser from 'body-parser';
+import { TravelController } from './controllers/travelController';
 
+const traveller = new TravelController();
 
-if (process.env.APP_MODE !== 'prod')
-sequelize.sync();
 
 const app = express();
 app.use(bodyParser.json());
 
 app.use('/api', index);
+
+setInterval(() => {
+    traveller.read();
+}, 1000 * 60 * 1)//Every 10 minutes
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err)
