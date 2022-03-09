@@ -11,6 +11,8 @@ export default class Travel extends Model {
     declare date_at: Date;
     declare is_completed: boolean;
     declare max_price: string;
+    declare origin_name: string;
+    declare destination_name: string;
 }
 
 Travel.init({
