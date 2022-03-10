@@ -6,7 +6,7 @@ const logger = (message: string, filename = '', showInConsole = true) => {
     if (showInConsole)
         console.log(logText);
 
-    const file = `./logs/${getDate()}${filename ? '-' + filename : ''}.log`
+    const file = `${__dirname}/../logs/${getDate()}${filename ? '-' + filename : ''}.log`
 
     fs.appendFile(file, logText, 'utf8', (error) => {
         if (error) {

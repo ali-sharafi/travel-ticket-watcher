@@ -57,7 +57,7 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             if (tickets.length > 0) {
                 let payload: TicketNotification = {
                     message: `Ticket found: ${travel.origin_name} To ${travel.destination_name} for ${travel.date_at}`,
-                    link: `https://www.alibaba.ir/flights/${travel.origin_name}-${travel.destination_name}?adult=1&child=0&infant=0&departing=${moment(travel.date_at).format('jYYYY-MM-DD')}`
+                    link: `https://www.alibaba.ir/flights/${travel.origin_name}-${travel.destination_name}?adult=1&child=0&infant=0&departing=${moment(travel.date_at).format('jYYYY-jMM-jDD')}`
                 }
 
                 this.notify(payload);

@@ -2,9 +2,10 @@ import ProxyAgent from 'https-proxy-agent';
 import TelegramBot from 'node-telegram-bot-api';
 import { BOT_TOKEN, PROXY_SERVER, TELEGRAM_PASSWORD } from '../config/config';
 import fs from 'fs';
+import logger from './logger';
 
 let proxyAgent;
-let users: Array<number>
+var users: Array<number> = []
 
 if (PROXY_SERVER) {
     proxyAgent = ProxyAgent(PROXY_SERVER);
@@ -22,7 +23,7 @@ telegramBot.onText(/\/start/, (msg, match) => {
     telegramBot.sendMessage(msg.chat.id, 'Pls Enter your Password')
 });
 
-telegramBot.onText(new RegExp('/\/' + TELEGRAM_PASSWORD + '/'), (msg, match) => {
+telegramBot.onText(new RegExp(TELEGRAM_PASSWORD), (msg, match) => {
     const chatId = msg.chat.id
     users.push(chatId)
     users = [...new Set(users)];
@@ -32,7 +33,9 @@ telegramBot.onText(new RegExp('/\/' + TELEGRAM_PASSWORD + '/'), (msg, match) => 
 });
 
 async function saveUsers() {
-    fs.writeFile(`./storage/telegram-users.json`, JSON.stringify(users, null, 2), () => { });
+    fs.writeFile(`${__dirname}/../storage/telegram-users.json`, JSON.stringify(users, null, 2), (err) => {
+        if (err) logger('Some error occured while save new users: ' + err.message)
+    });
 }
 
 export default telegramBot;

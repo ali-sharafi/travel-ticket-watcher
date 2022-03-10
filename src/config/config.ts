@@ -7,7 +7,7 @@ const DB_USERNAME: string = process.env.DB_USERNAME!;
 const DB_PASSWORD: string = process.env.DB_PASSWORD!;
 const BOT_TOKEN: string = process.env.BOT_TOKEN!;
 const PROXY_SERVER: string | undefined = process.env.PROXY_SERVER;
-const TELEGRAM_PASSWORD: string | undefined = process.env.TELEGRAM_PASSWORD;
+const TELEGRAM_PASSWORD: string = process.env.TELEGRAM_PASSWORD!;
 
 
 export {
