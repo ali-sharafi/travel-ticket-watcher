@@ -26,7 +26,7 @@ if (!fs.existsSync(__dirname + '/logs')) {
 }
 setInterval(() => {
     traveller.read();
-}, 1000 * 60 * 1)//Every 10 minutes
+}, 1000 * 60 * 5)//Every 10 minutes
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err)
