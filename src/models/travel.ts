@@ -51,5 +51,5 @@ Travel.init({
     sequelize,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    table:'travels'
+    tableName: 'travels'
 });
