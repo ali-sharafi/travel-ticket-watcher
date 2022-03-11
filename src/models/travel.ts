@@ -13,6 +13,8 @@ export default class Travel extends Model {
     declare max_price: string;
     declare origin_name: string;
     declare destination_name: string;
+    declare origin_code: string;
+    declare destination_code: string;
 }
 
 Travel.init({
