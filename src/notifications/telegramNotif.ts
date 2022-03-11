@@ -9,9 +9,10 @@ const telegramNotif = async (message: string): Promise<void> => {
             let users: Array<number> = JSON.parse(data);
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
-                telegramBot.sendMessage(user, message, {
-                    parse_mode: 'HTML'
-                });
+                if (telegramBot)
+                    telegramBot.sendMessage(user, message, {
+                        parse_mode: 'HTML'
+                    });
             }
         }
     })
