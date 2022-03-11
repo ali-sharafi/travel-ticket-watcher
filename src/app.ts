@@ -24,6 +24,7 @@ if (!fs.existsSync(__dirname + '/logs')) {
         if (err) logger('Some error occure while create logs directory: ' + err.message)
     });
 }
+traveller.read();
 setInterval(() => {
     traveller.read();
 }, 1000 * 60 * 5)//Every 10 minutes
