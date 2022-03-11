@@ -21,5 +21,6 @@ City.init({
     },
 }, {
     sequelize,
-    timestamps: false
+    timestamps: false,
+    table:'cities'
 });
