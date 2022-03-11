@@ -39,13 +39,13 @@ export class Flightio extends BaseEntity implements TravelInterface {
             let tickets = await this.getAirPlanTrips(token);
             if (tickets.length > 0) {
                 let payload: TicketNotification = {
-                    message: `Ticket found: ${travel.origin_name} To ${travel.destination_name} for ${travel.date_at}`,
+                    message: `Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
                     link: `https://flightio.com/flight/search/2/${travel.origin_code}-${travel.destination_code}/${travel.date_at}/1-0-0`
                 }
 
                 this.notify(payload);
-            } else logger(`There is not any trips for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at flightio`, 'flightio')
-        } else logger(`Token not available for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at flightio`, 'flightio')
+            } else logger(`There is not any trips for travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at flightio`, 'flightio')
+        } else logger(`Token not available for travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at flightio`, 'flightio')
     }
 
     private async getAirPlanTrips(token: string) {
