@@ -16,7 +16,7 @@ export class Alibaba extends BaseEntity implements TravelInterface {
 
     constructor() {
         super();
-        this.BASE_URI = 'https://ws.alibaba.ir/api/v1';
+        this.BASE_URI = 'https://ws.alibaba.ir/api';
     }
 
     async handle(travels: Travel[]): Promise<void> {
@@ -50,9 +50,6 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             case TravelTypes.TRAIN:
                 this.getTrainTravels(travel);
                 break;
-            case TravelTypes.BUS:
-                this.getTrainTravels(travel);
-                break;
 
             default:
                 break;
@@ -65,19 +62,19 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             let tickets = await this.getAirPlanTrips(token);
             if (tickets.length > 0) {
                 let payload: TicketNotification = {
-                    message: `Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
+                    message: `Airplane Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
                     link: `https://www.alibaba.ir/flights/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&infant=0&departing=${moment(travel.date_at).format('jYYYY-jMM-jDD')}`
                 }
 
                 this.notify(payload);
-            } else logger(`There is not any trips for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
-        } else logger(`Token not available for travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
+            } else logger(`There is not any trips for airplane travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
+        } else logger(`Token not available for airplane travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
     }
 
     private async getAirPlanTrips(token: string): Promise<Array<object>> {
         let res: void | AxiosResponse<AlibabaAvailableTokenRes>;
 
-        res = await axios.get(this.BASE_URI + '/flights/domestic/available/' + token)
+        res = await axios.get(this.BASE_URI + '/v1/flights/domestic/available/' + token)
             .catch((err: AxiosError) => {
                 console.log('Some error occured while get alibaba trips: ' + err.message);
             });
@@ -87,13 +84,37 @@ export class Alibaba extends BaseEntity implements TravelInterface {
         return [];
     }
 
-    private getBusTravels(travel: Travel) { }
+    private async getTrainTravels(travel: Travel) {
+        let token = await this.getAvailableTrainToken(travel);
+        if (token) {
+            let tickets = await this.getTrainTrips(token);
+            if (tickets.length > 0) {
+                let payload: TicketNotification = {
+                    message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
+                    link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${moment(travel.date_at).format('jYYYY-jMM-jDD')}`
+                }
 
-    private getTrainTravels(travel: Travel) { }
+                this.notify(payload);
+            } else logger(`There is not any trips for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
+        } else logger(`Token not available for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
+    }
+
+    private async getTrainTrips(token: string) {
+        let res: void | AxiosResponse<AlibabaAvailableTokenRes>;
+
+        res = await axios.get(this.BASE_URI + '/v1/train/available/' + token)
+            .catch((err: AxiosError) => {
+                console.log('Some error occured while get alibaba train trips: ' + err.message);
+            });
+
+        if (res && res.data)
+            return (res.data.result as FinalResult).departing;
+        return [];
+    }
 
     private async getAvailableToken(travel: Travel): Promise<string | null> {
         let res: void | AxiosResponse<AlibabaAvailableTokenRes>;
-        res = await axios.post(this.BASE_URI + '/flights/domestic/available', {
+        res = await axios.post(this.BASE_URI + '/v1/flights/domestic/available', {
             adult: 1,
             child: 0,
             infant: 0,
@@ -102,6 +123,24 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             origin: travel.origin_code
         }).catch((err: AxiosError) => {
             console.log('Some error occured while get available token: ' + err.message);
+        });
+
+        if (res && res.data)
+            return (res.data.result as ResultType).requestId;
+        return null;
+    }
+
+    private async getAvailableTrainToken(travel: Travel): Promise<string | null> {
+        let res: void | AxiosResponse<AlibabaAvailableTokenRes>;
+        res = await axios.post(this.BASE_URI + '/v2/train/available', {
+            passengerCount: 1,
+            ticketType: "Family",
+            isExclusiveCompartment: false,
+            departureDate: travel.date_at,
+            destination: travel.destination_code,
+            origin: travel.origin_code
+        }).catch((err: AxiosError) => {
+            console.log('Some error occured while get available Train token in alibaba: ' + err.message);
         });
 
         if (res && res.data)
