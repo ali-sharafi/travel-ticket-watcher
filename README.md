@@ -1,4 +1,4 @@
-# ticketwatcher
+# TicketWatcher
 
 Add a watch list to find tickets in specific travel origin and destination.
 
@@ -8,7 +8,7 @@ Add a watch list to find tickets in specific travel origin and destination.
 npm install && cp .env.example .env
 ```
 
-## Run In development typescript
+## Run in development typescript
 
 ```bash
 tsc -w
