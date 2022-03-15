@@ -67,8 +67,8 @@ export class Alibaba extends BaseEntity implements TravelInterface {
                 }
 
                 this.notify(payload);
-            } else logger(`There is not any trips for airplane travel ${travel.origin_code}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
-        } else logger(`Token not available for airplane travel ${travel.origin_code}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba')
+            } else logger(`There is not any trips for airplane travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
+        } else logger(`Token not available for airplane travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
     }
 
     private async getAirPlanTrips(token: string): Promise<Array<object>> {
