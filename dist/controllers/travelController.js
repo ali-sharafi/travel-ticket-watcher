@@ -16,10 +16,11 @@ exports.TravelController = void 0;
 const travel_1 = __importDefault(require("../models/travel"));
 const alibaba_1 = require("../services/alibaba");
 const flightio_1 = require("../services/flightio");
+const ghasedak_1 = require("../services/ghasedak");
 const logger_1 = __importDefault(require("../utils/logger"));
 class TravelController {
     constructor() {
-        this.services = [new alibaba_1.Alibaba(), new flightio_1.Flightio()];
+        this.services = [new alibaba_1.Alibaba(), new flightio_1.Flightio(), new ghasedak_1.Ghasedak()];
     }
     read() {
         return __awaiter(this, void 0, void 0, function* () {

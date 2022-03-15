@@ -3,13 +3,14 @@ import { TravelInterface } from "../contract/travelInterface";
 import Travel from "../models/travel";
 import { Alibaba } from "../services/alibaba";
 import { Flightio } from "../services/flightio";
+import { Ghasedak } from "../services/ghasedak";
 import logger from "../utils/logger";
 
 export class TravelController {
     declare services: TravelInterface[];
 
     constructor() {
-        this.services = [new Alibaba(), new Flightio()];
+        this.services = [new Alibaba(), new Flightio(), new Ghasedak()];
     }
 
     async read() {

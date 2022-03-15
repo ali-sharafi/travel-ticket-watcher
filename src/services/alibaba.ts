@@ -33,15 +33,6 @@ export class Alibaba extends BaseEntity implements TravelInterface {
 
     }
 
-    private addTravelAttributes(travel: Travel) {
-        let origin: City = this.getCityByID(travel.origin)!;
-        let destination: City = this.getCityByID(travel.destination)!;
-        travel.origin_code = origin.code;
-        travel.destination_code = destination.code;
-        travel.origin_name = destination.name;
-        travel.destination_name = destination.name;
-    }
-
     private checkTravel(travel: Travel) {
         switch (travel.type) {
             case TravelTypes.AIRPLAN:

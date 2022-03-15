@@ -95,15 +95,6 @@ export class Flightio extends BaseEntity implements TravelInterface {
         }
     }
 
-    private addTravelAttributes(travel: travel) {
-        let origin: City = this.getCityByID(travel.origin)!;
-        let destination: City = this.getCityByID(travel.destination)!;
-        travel.origin_code = origin.code;
-        travel.destination_code = destination.code;
-        travel.origin_name = destination.name;
-        travel.destination_name = destination.name;
-    }
-
     async notify(payload: TicketNotification): Promise<void> {
         let message = payload.message + '\n';
         message += `<a href="${payload.link}">Link</a>`

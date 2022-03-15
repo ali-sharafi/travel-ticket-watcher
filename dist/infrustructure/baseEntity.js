@@ -22,5 +22,14 @@ class BaseEntity {
     getCityByID(cityID) {
         return this.cities.find(item => item.id == cityID);
     }
+    addTravelAttributes(travel) {
+        let origin = this.getCityByID(travel.origin);
+        let destination = this.getCityByID(travel.destination);
+        travel.origin_code = origin.code;
+        travel.destination_code = destination.code;
+        travel.origin_name = destination.name;
+        travel.destination_name = destination.name;
+        return travel;
+    }
 }
 exports.default = BaseEntity;

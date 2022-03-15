@@ -37,14 +37,6 @@ class Alibaba extends baseEntity_1.default {
             }
         });
     }
-    addTravelAttributes(travel) {
-        let origin = this.getCityByID(travel.origin);
-        let destination = this.getCityByID(travel.destination);
-        travel.origin_code = origin.code;
-        travel.destination_code = destination.code;
-        travel.origin_name = destination.name;
-        travel.destination_name = destination.name;
-    }
     checkTravel(travel) {
         switch (travel.type) {
             case enums_1.TravelTypes.AIRPLAN:
@@ -70,10 +62,10 @@ class Alibaba extends baseEntity_1.default {
                     this.notify(payload);
                 }
                 else
-                    (0, logger_1.default)(`There is not any trips for airplane travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba');
+                    (0, logger_1.default)(`There is not any trips for airplane travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba');
             }
             else
-                (0, logger_1.default)(`Token not available for airplane travel ${travel.origin_name}-${travel.destination_name}:${travel.date_at} at alibaba`, 'alibaba');
+                (0, logger_1.default)(`Token not available for airplane travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba');
         });
     }
     getAirPlanTrips(token) {

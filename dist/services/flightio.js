@@ -32,7 +32,7 @@ class Flightio extends baseEntity_1.default {
                 this.addTravelAttributes(travel);
                 (0, logger_1.default)(`Going to check travel ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at} at flightio`, 'flightio');
                 this.checkTravel(travel);
-                yield (0, tools_1.sleep)(1000 * 60 * 1);
+                yield (0, tools_1.sleep)(1000 * 60 * 2);
             }
         });
     }
@@ -98,14 +98,6 @@ class Flightio extends baseEntity_1.default {
             default:
                 break;
         }
-    }
-    addTravelAttributes(travel) {
-        let origin = this.getCityByID(travel.origin);
-        let destination = this.getCityByID(travel.destination);
-        travel.origin_code = origin.code;
-        travel.destination_code = destination.code;
-        travel.origin_name = destination.name;
-        travel.destination_name = destination.name;
     }
     notify(payload) {
         return __awaiter(this, void 0, void 0, function* () {
