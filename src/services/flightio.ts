@@ -29,7 +29,7 @@ export class Flightio extends BaseEntity implements TravelInterface {
             logger(`Going to check travel ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at} at flightio`, 'flightio')
             this.checkTravel(travel);
 
-            await sleep(1000 * 60 * 1);
+            await sleep(1000 * 60 * 2);
         }
     }
 
