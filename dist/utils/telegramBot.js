@@ -15,8 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const config_1 = require("../config/config");
-const fs_1 = __importDefault(require("fs"));
-const logger_1 = __importDefault(require("./logger"));
+const promises_1 = __importDefault(require("fs/promises"));
 let proxyAgent;
 var users = [];
 let telegramBot;
@@ -35,22 +34,31 @@ if (config_1.BOT_TOKEN) {
         if (telegramBot)
             telegramBot.sendMessage(msg.chat.id, 'Pls Enter your Password');
     });
-    telegramBot.onText(new RegExp(config_1.TELEGRAM_PASSWORD), (msg, match) => {
+    telegramBot.onText(new RegExp(config_1.TELEGRAM_PASSWORD), (msg, match) => __awaiter(void 0, void 0, void 0, function* () {
         const chatId = msg.chat.id;
+        yield readUsers();
         users.push(chatId);
         users = [...new Set(users)];
-        saveUsers();
+        yield saveUsers();
         console.log('new telegram user registered: ', users);
         if (telegramBot)
             telegramBot.sendMessage(chatId, 'Done.');
+    }));
+}
+function readUsers() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let data = yield promises_1.default.readFile(`${__dirname}/../storage/telegram-users.json`, 'utf-8');
+        users = JSON.parse(data);
     });
 }
 function saveUsers() {
     return __awaiter(this, void 0, void 0, function* () {
-        fs_1.default.writeFile(`${__dirname}/../storage/telegram-users.json`, JSON.stringify(users, null, 2), (err) => {
-            if (err)
-                (0, logger_1.default)('Some error occured while save new users: ' + err.message);
-        });
+        try {
+            yield promises_1.default.writeFile(`${__dirname}/../storage/telegram-users.json`, JSON.stringify(users, null, 2));
+        }
+        catch (error) {
+            console.log('Some error occured while saving users: ' + error);
+        }
     });
 }
 exports.default = telegramBot;

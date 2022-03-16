@@ -1,8 +1,7 @@
 import ProxyAgent from 'https-proxy-agent';
 import TelegramBot from 'node-telegram-bot-api';
 import { BOT_TOKEN, PROXY_SERVER, TELEGRAM_PASSWORD } from '../config/config';
-import fs from 'fs';
-import logger from './logger';
+import fs from 'fs/promises';
 
 let proxyAgent;
 var users: Array<number> = [];
@@ -26,21 +25,29 @@ if (BOT_TOKEN) {
             telegramBot.sendMessage(msg.chat.id, 'Pls Enter your Password')
     });
 
-    telegramBot.onText(new RegExp(TELEGRAM_PASSWORD), (msg, match) => {
+    telegramBot.onText(new RegExp(TELEGRAM_PASSWORD), async (msg, match) => {
         const chatId = msg.chat.id
+        await readUsers();
         users.push(chatId)
         users = [...new Set(users)];
-        saveUsers();
+        await saveUsers();
         console.log('new telegram user registered: ', users)
         if (telegramBot)
             telegramBot.sendMessage(chatId, 'Done.')
     });
 }
 
+async function readUsers() {
+    let data = await fs.readFile(`${__dirname}/../storage/telegram-users.json`, 'utf-8');
+    users = JSON.parse(data);
+}
+
 async function saveUsers() {
-    fs.writeFile(`${__dirname}/../storage/telegram-users.json`, JSON.stringify(users, null, 2), (err) => {
-        if (err) logger('Some error occured while save new users: ' + err.message)
-    });
+    try {
+        await fs.writeFile(`${__dirname}/../storage/telegram-users.json`, JSON.stringify(users, null, 2))
+    } catch (error) {
+        console.log('Some error occured while saving users: ' + error);
+    }
 }
 
 export default telegramBot;
