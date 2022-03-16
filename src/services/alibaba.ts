@@ -79,7 +79,7 @@ export class Alibaba extends BaseEntity implements TravelInterface {
         let token = await this.getAvailableTrainToken(travel);
         if (token) {
             let tickets = await this.getTrainTrips(token);
-            if (tickets.length > 0) {
+            if (tickets && !tickets.isCompleted && tickets.departing.length > 0) {
                 let payload: TicketNotification = {
                     message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
                     link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${moment(travel.date_at).format('jYYYY-jMM-jDD')}`
@@ -99,8 +99,8 @@ export class Alibaba extends BaseEntity implements TravelInterface {
             });
 
         if (res && res.data)
-            return (res.data.result as FinalResult).departing;
-        return [];
+            return (res.data.result as FinalResult);
+        return null;
     }
 
     private async getAvailableToken(travel: Travel): Promise<string | null> {
