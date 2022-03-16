@@ -14,7 +14,7 @@ export class Ghasedak extends BaseEntity implements TravelInterface {
 
     constructor() {
         super();
-        this.BASE_URI = 'https://ghasedak24.com/search/ajax_flight';
+        this.BASE_URI = 'https://ghasedak24.com/search';
     }
 
     async handle(travels: Travel[]): Promise<void> {
@@ -36,10 +36,38 @@ export class Ghasedak extends BaseEntity implements TravelInterface {
             case TravelTypes.AIRPLAN:
                 this.getAirPlanTravels(travel);
                 break;
+            // case TravelTypes.TRAIN:
+            //     this.getTrainTravels(travel);
+            //     break;
 
             default:
                 break;
         }
+    }
+
+    private async getTrainTravels(travel: Travel) {
+        let tickets = await this.getTrainTrips();
+        if (tickets && tickets.data.departure.length > 0) {
+            let payload: TicketNotification = {
+                message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
+                link: `https://ghasedak24.com/search/train/${travel.origin_code}-${travel.destination_code}/${moment(travel.date_at).format('jYYYY-jMM-jDD')}/1-0-0`
+            }
+
+            this.notify(payload);
+        } else logger(`There is not any trips for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at ghasedak`, 'ghasedak')
+    }
+
+    private async getTrainTrips() {
+        let res: void | AxiosResponse<{ data: string }>;
+
+        res = await axios.get(this.BASE_URI + '/search_train')
+            .catch((err: AxiosError) => {
+                console.log('Some error occured while get ghasedak train trips: ' + err.message);
+            });
+
+        if (res && res.data)
+            return JSON.parse(res.data.data) as { data: { departure: Array<object> } };
+        return null;
     }
 
     private async getAirPlanTravels(travel: Travel) {
@@ -57,7 +85,7 @@ export class Ghasedak extends BaseEntity implements TravelInterface {
     private async getAirPlanTrips(travel: Travel) {
         let res: void | AxiosResponse<{ search: { flights: Array<object> } }>;
 
-        res = await axios.post(`${this.BASE_URI}`, {
+        res = await axios.post(`${this.BASE_URI}/ajax_flight`, {
             "route": `${travel.origin_code}-${travel.destination_code}`,
             "date": moment(travel.date_at).format('jYYYY-jMM-jDD'),
             "number": "1-0-0"

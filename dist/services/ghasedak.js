@@ -23,7 +23,7 @@ const tools_1 = require("../utils/tools");
 class Ghasedak extends baseEntity_1.default {
     constructor() {
         super();
-        this.BASE_URI = 'https://ghasedak24.com/search/ajax_flight';
+        this.BASE_URI = 'https://ghasedak24.com/search';
     }
     handle(travels) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -42,9 +42,38 @@ class Ghasedak extends baseEntity_1.default {
             case enums_1.TravelTypes.AIRPLAN:
                 this.getAirPlanTravels(travel);
                 break;
+            // case TravelTypes.TRAIN:
+            //     this.getTrainTravels(travel);
+            //     break;
             default:
                 break;
         }
+    }
+    getTrainTravels(travel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tickets = yield this.getTrainTrips();
+            if (tickets && tickets.data.departure.length > 0) {
+                let payload = {
+                    message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
+                    link: `https://ghasedak24.com/search/train/${travel.origin_code}-${travel.destination_code}/${(0, moment_jalaali_1.default)(travel.date_at).format('jYYYY-jMM-jDD')}/1-0-0`
+                };
+                this.notify(payload);
+            }
+            else
+                (0, logger_1.default)(`There is not any trips for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at ghasedak`, 'ghasedak');
+        });
+    }
+    getTrainTrips() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res;
+            res = yield axios_1.default.get(this.BASE_URI + '/search_train')
+                .catch((err) => {
+                console.log('Some error occured while get ghasedak train trips: ' + err.message);
+            });
+            if (res && res.data)
+                return JSON.parse(res.data.data);
+            return null;
+        });
     }
     getAirPlanTravels(travel) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -63,7 +92,7 @@ class Ghasedak extends baseEntity_1.default {
     getAirPlanTrips(travel) {
         return __awaiter(this, void 0, void 0, function* () {
             let res;
-            res = yield axios_1.default.post(`${this.BASE_URI}`, {
+            res = yield axios_1.default.post(`${this.BASE_URI}/ajax_flight`, {
                 "route": `${travel.origin_code}-${travel.destination_code}`,
                 "date": (0, moment_jalaali_1.default)(travel.date_at).format('jYYYY-jMM-jDD'),
                 "number": "1-0-0"
