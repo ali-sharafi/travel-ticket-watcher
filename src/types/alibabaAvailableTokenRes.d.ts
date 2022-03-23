@@ -4,7 +4,7 @@ export type ResultType = {
 }
 
 export type FinalResult = {
-    departing: Array<object>;
+    departing: Array<{ seat: number }>;
     hasLabel: boolean;
     isCompleted: boolean;
     returning: Array<object>;

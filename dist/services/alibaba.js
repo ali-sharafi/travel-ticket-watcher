@@ -85,7 +85,7 @@ class Alibaba extends baseEntity_1.default {
             let token = yield this.getAvailableTrainToken(travel);
             if (token) {
                 let tickets = yield this.getTrainTrips(token);
-                if (tickets && !tickets.isCompleted && tickets.departing.length > 0) {
+                if (tickets && tickets.departing.length > 0 && this.isTrainTicketAvailable(tickets)) {
                     let payload = {
                         message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.date_at}`,
                         link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${(0, moment_jalaali_1.default)(travel.date_at).format('jYYYY-jMM-jDD')}`
@@ -98,6 +98,9 @@ class Alibaba extends baseEntity_1.default {
             else
                 (0, logger_1.default)(`Token not available for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba');
         });
+    }
+    isTrainTicketAvailable(tickets) {
+        return tickets.departing.findIndex(item => item.seat > 0) !== -1;
     }
     getTrainTrips(token) {
         return __awaiter(this, void 0, void 0, function* () {
