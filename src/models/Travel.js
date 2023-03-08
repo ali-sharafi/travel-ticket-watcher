@@ -8,9 +8,11 @@ const TravelSchema = new mongoose.Schema({
         enum: [TravelType.AIRPLAN, TravelType.BUS, TravelType.TRAIN],
         default: TravelType.AIRPLAN
     },
-    origin:Integer,
+    origin: Integer,
     destination: Integer,
-    
+    date_at: Date,
+    is_completed: Boolean,
+    max_price: String,
     createdAt: {
         type: Date,
         default: Date.now
