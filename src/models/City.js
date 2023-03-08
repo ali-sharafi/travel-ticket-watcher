@@ -5,6 +5,10 @@ const CitySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name_en: {
+        type: String,
+        required: true
+    },
     code: {
         type: String,
         required: true
