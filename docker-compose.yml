@@ -12,7 +12,7 @@ services:
       - mongodb
     env_file:
       - ./.env
-    container_name: visa_bot
+    container_name: ticket_watcher
   mongodb:
     image: mongo:4.4.18
     restart: always
@@ -22,7 +22,7 @@ services:
       - dbdata:/data/db
     ports:
       - '27018:27017'
-    container_name: visa_mongo
+    container_name: ticket_watcher_mongo
   npm:
     image: node:18
     working_dir: /app
