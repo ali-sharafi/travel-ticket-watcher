@@ -4,12 +4,12 @@ const alibaba = require("./sites/alibaba");
 
 module.exports.GetAll = async () => {
     let cities = await City.find();
-    let travels = await Travel.find();
+    let travels = await Travel.find({ is_completed: false });
     try {
         for (let i = 0; i < travels.length; i++) {
             let travel = travels[i];
             addTravelAttributes(travel, cities);
-            
+
             await alibaba(travel);
         }
     } catch (error) {
