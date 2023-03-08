@@ -1,6 +1,6 @@
-import telegramBot from "../utils/telegramBot";
-import fs from "fs";
-import logger from "../utils/logger";
+const telegramBot = require("../utils/telegramBot");
+const fs = require("fs");
+const logger = require("../utils/logger");
 
 module.exports = async (message) => {
     fs.readFile(__dirname + '/../storage/telegram-users.json', 'utf-8', (err, data) => {

@@ -1,5 +1,5 @@
-import TelegramBot from 'node-telegram-bot-api';
-import fs from 'fs/promises';
+const TelegramBot = require('node-telegram-bot-api');
+const fs =require('fs/promises');
 
 var users = [];
 let telegramBot;
