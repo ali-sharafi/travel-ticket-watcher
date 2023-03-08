@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs/promises');
 const Travel = require('../models/Travel');
 const logger = require('./logger');
-
+const usersPath = `${__dirname}/../../storage/telegram-users.json`;
 var users = [];
 let telegramBot;
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -15,6 +15,12 @@ if (BOT_TOKEN) {
             url: 'api.telegram.org',
         }
     });
+
+    fs.stat(usersPath).catch(() => {
+        fs.writeFile(usersPath, JSON.stringify([]), 'utf-8', (err) => {
+            if (err) console.log(err)
+        })
+    })
 
     telegramBot.onText(/\/start/, (msg, match) => {
         if (telegramBot)
@@ -42,13 +48,13 @@ if (BOT_TOKEN) {
 }
 
 async function readUsers() {
-    let data = await fs.readFile(`${__dirname}/../../storage/telegram-users.json`, 'utf-8');
+    let data = await fs.readFile(usersPath, 'utf-8');
     users = JSON.parse(data);
 }
 
 async function saveUsers() {
     try {
-        await fs.writeFile(`${__dirname}/../../storage/telegram-users.json`, JSON.stringify(users, null, 2))
+        await fs.writeFile(usersPath, JSON.stringify(users, null, 2))
     } catch (error) {
         console.log('Some error occured while saving users: ' + error);
     }
