@@ -1,6 +1,7 @@
 const City = require("./models/City");
 const Travel = require("./models/Travel");
 const alibaba = require("./sites/alibaba");
+const logger = require("./utils/logger");
 const { sleep } = require('./utils/tools');
 
 module.exports.GetAll = async () => {
