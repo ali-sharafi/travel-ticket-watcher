@@ -12,7 +12,7 @@ module.exports.GetAll = async () => {
             addTravelAttributes(travel, cities);
 
             await alibaba(travel);
-            await sleep(10000);//miliseconds
+            await sleep(process.env.DELAY_PER_TRAVEL);//miliseconds
         }
     } catch (error) {
         logger(error);
