@@ -1,6 +1,7 @@
 const City = require("./models/City");
 const Travel = require("./models/Travel");
 const alibaba = require("./sites/alibaba");
+const { sleep } = require('./utils/tools');
 
 module.exports.GetAll = async () => {
     let cities = await City.find();
@@ -11,6 +12,7 @@ module.exports.GetAll = async () => {
             addTravelAttributes(travel, cities);
 
             await alibaba(travel);
+            await sleep(10000);//miliseconds
         }
     } catch (error) {
         logger(error);
