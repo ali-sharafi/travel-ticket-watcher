@@ -22,6 +22,54 @@ module.exports = async (travel) => {
     }
 }
 
+async function getTrainTravels(travel) {
+    let token = await getAvailableTrainToken(travel);
+    if (token) {
+        let tickets = await getTrainTrips(token);
+        if (tickets && tickets.departing.length > 0 && isTrainTicketAvailable(tickets)) {
+            let payload = {
+                message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.leaveDateTime}`,
+                link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${momentj(travel.date_at).format('jYYYY-jMM-jDD')}`,
+                travelId: travel.id
+            }
+
+            notify(payload);
+        } else logger(`There is not any trips for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
+    } else logger(`Token not available for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
+}
+
+function isTrainTicketAvailable(tickets) {
+    return tickets.departing.findIndex(item => item.seat > 0) !== -1
+}
+
+async function getTrainTrips(token) {
+    let res = await axios.get(BASE_URI + '/v1/train/available/' + token)
+        .catch((err) => {
+            console.log('Some error occured while get alibaba train trips: ' + err.message);
+        });
+
+    if (res && res.data)
+        return res.data.result;
+    return null;
+}
+
+async function getAvailableTrainToken(travel) {
+    let res = await axios.post(BASE_URI + '/v2/train/available', {
+        passengerCount: 1,
+        ticketType: "Family",
+        isExclusiveCompartment: false,
+        departureDate: travel.date_at,
+        destination: travel.destination_code,
+        origin: travel.origin_code
+    }).catch((err) => {
+        console.log('Some error occured while get available Train token in alibaba: ' + err.message);
+    });
+
+    if (res && res.data)
+        return res.data.result.requestId;
+    return null;
+}
+
 async function getAirPlaneTravels(travel) {
     let token = await getAvailableAirplaneToken(travel);
     if (token) {

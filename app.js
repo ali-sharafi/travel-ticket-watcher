@@ -13,6 +13,7 @@ const { TravelType } = require('./src/utils/types');
 db.connect().then(() => {
     logger('Going to Update DB');
     updateCities();
+    insertFakeData();
 })
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
@@ -21,6 +22,26 @@ cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
         logger(e)
     });
 });
+
+async function insertFakeData() {
+    await Travel.deleteMany({});
+    let origin = await City.findOne({ code: 'THR' });
+    let destination = await City.findOne({ code: 'MHD' });
+    await Travel.create({
+        origin: origin.id,
+        type: TravelType.TRAIN,
+        destination: destination.id,
+        date_at: '2023-03-12',
+        is_completed: false
+    })
+    await Travel.create({
+        origin: origin.id,
+        type: TravelType.AIRPLANE,
+        destination: destination.id,
+        date_at: '2023-03-12',
+        is_completed: false
+    })
+}
 
 async function updateCities() {
     if ((await City.count()) == 0) {
