@@ -5,8 +5,8 @@ const TravelSchema = new mongoose.Schema({
     user_id: String,
     type: {
         type: String,
-        enum: [TravelType.AIRPLAN, TravelType.BUS, TravelType.TRAIN],
-        default: TravelType.AIRPLAN
+        enum: [TravelType.AIRPLANE, TravelType.BUS, TravelType.TRAIN],
+        default: TravelType.AIRPLANE
     },
     origin: String,
     destination: String,

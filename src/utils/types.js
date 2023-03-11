@@ -1,5 +1,5 @@
 module.exports.TravelType = {
-    AIRPLAN: 'AIRPLAN',
+    AIRPLANE: 'AIRPLANE',
     TRAIN: 'TRAIN',
     BUS: 'BUS'
 }
