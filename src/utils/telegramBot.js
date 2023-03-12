@@ -49,7 +49,8 @@ if (BOT_TOKEN) {
 
 async function readUsers() {
     let data = await fs.readFile(usersPath, 'utf-8');
-    users = JSON.parse(data);
+    let parsedData = data ? JSON.parse(data) : [];
+    users = Array.isArray(parsedData) ? parsedData : [];
 }
 
 async function saveUsers() {

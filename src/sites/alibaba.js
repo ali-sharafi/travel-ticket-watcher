@@ -27,13 +27,16 @@ async function getTrainTravels(travel) {
     if (token) {
         let tickets = await getTrainTrips(token);
         if (tickets && tickets.departing.length > 0 && isTrainTicketAvailable(tickets)) {
-            let payload = {
-                message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${travel.leaveDateTime}`,
-                link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${momentj(travel.date_at).format('jYYYY-jMM-jDD')}`,
-                travelId: travel.id
-            }
+            tickets.departing.filter(item => item.seat > 0).forEach(ticket => {
+                let payload = {
+                    message: `Train Ticket found: ${travel.origin_code} To ${travel.destination_code} for ${ticket.departureDateTime}`,
+                    link: `https://www.alibaba.ir/train/${travel.origin_code}-${travel.destination_code}?adult=1&child=0&ticketType=Family&isExclusive=false&infant=0&departing=${momentj(travel.date_at).format('jYYYY-jMM-jDD')}`,
+                    travelId: travel.id
+                }
 
-            notify(payload);
+                notify(payload);
+            })
+
         } else logger(`There is not any trips for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
     } else logger(`Token not available for train travel ${travel.origin_code}-${travel.destination_code}:${travel.date_at} at alibaba`, 'alibaba')
 }

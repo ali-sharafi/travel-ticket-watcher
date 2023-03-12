@@ -13,7 +13,6 @@ const { TravelType } = require('./src/utils/types');
 db.connect().then(() => {
     logger('Going to Update DB');
     updateCities();
-    insertFakeData();
 })
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
@@ -31,14 +30,14 @@ async function insertFakeData() {
         origin: origin.id,
         type: TravelType.TRAIN,
         destination: destination.id,
-        date_at: '2023-03-12',
+        date_at: '2023-03-23',
         is_completed: false
     })
     await Travel.create({
         origin: origin.id,
         type: TravelType.AIRPLANE,
         destination: destination.id,
-        date_at: '2023-03-12',
+        date_at: '2023-03-22',
         is_completed: false
     })
 }
